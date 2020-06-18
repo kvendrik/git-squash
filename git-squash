@@ -1,0 +1,67 @@
+#!/bin/bash
+
+function git_current_branch() {
+  git branch | grep '\*' | cut -d ' ' -f2
+}
+
+function git_backup() {
+  git checkout "$1" && git checkout -b "$2" && git checkout "$1"
+}
+
+function git_commit() {
+  git add --all :/ && git commit
+}
+
+if ! git -C "$(pwd)" rev-parse --is-inside-work-tree &> /dev/null; then
+  echo "$(pwd) is not a git repository."
+  exit 1
+fi
+
+base_branch="master"
+target_branch="$(git_current_branch)"
+backup_branch="$target_branch-backup"
+
+if [ -n "$1" ]; then
+  base_branch="$1"
+fi
+
+if [ -n "$2" ]; then
+  target_branch="$2"
+fi
+
+if [ -n "$3" ]; then
+  backup_branch="$3"
+fi
+
+if git merge-base "$base_branch" "$target_branch" &> /dev/null; then
+  squash_from_commit="$(git merge-base "$base_branch" "$target_branch")"
+else
+  echo "Error finding commit to squash from"
+  exit 1
+fi
+
+echo -n "This will squash all commits in $target_branch based on $base_branch. Continue? [y/N] "
+read -r do_reset
+
+if [ "$do_reset" != "y" ]; then
+  exit 0
+fi
+
+echo "Backing up $target_branch in $backup_branch..."
+if ! git_backup "$target_branch" "$backup_branch"; then
+  echo "Backing up $target_branch to $backup_branch failed."
+  exit 1
+fi
+
+echo "Squashing commits in $target_branch..."
+if ! git reset "$squash_from_commit"; then
+  echo "Squashing $target_branch failed. Tried to use commit hash $squash_from_commit."
+  exit 1
+fi
+
+if ! git_commit; then
+  echo "Squashing worked but failed to create a new squash commit."
+  exit 1
+fi
+
+echo "Done. Pushing will require a force push. Backup can be found in $backup_branch."
