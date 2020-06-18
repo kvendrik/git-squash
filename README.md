@@ -1,4 +1,4 @@
-# git-squash
+# [WIP] git-squash
 
 ```
 Usage: git squash [<base_branch>] [<target_branch>] [<backup_branch>]
