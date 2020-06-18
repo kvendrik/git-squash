@@ -33,6 +33,11 @@ if [ -n "$3" ]; then
   backup_branch="$3"
 fi
 
+if [ "$base_branch" == "$target_branch" ]; then
+  echo "Base branch $base_branch can't be the same as the target branch $target_branch."
+  exit 1
+fi
+
 if git merge-base "$base_branch" "$target_branch" &> /dev/null; then
   squash_from_commit="$(git merge-base "$base_branch" "$target_branch")"
 else
