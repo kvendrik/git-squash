@@ -1,5 +1,7 @@
 # [WIP] git-squash
 
+![](demo.gif)
+
 ```
 Usage: git squash [<base_branch>] [<target_branch>] [<backup_branch>]
 
