@@ -2,6 +2,8 @@
 
 👏 Squash all commits in your current branch into one
 
+![](demo.gif)
+
 ## What this does
 
 The goal here is to make cleaning up your branch commits even quicker. Please note though that `git squash` is just a slightly quicker and unified way to execute these commands:
