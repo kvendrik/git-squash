@@ -123,11 +123,3 @@ if ! git_commit "$commit_message"; then
   echo "'git reset' worked but failed to create a new squash commit. Please manually run 'git add --all && git commit'."
   exit 1
 fi
-
-done_message="Done. Pushing will require a force push (e.g. git push origin $target_branch --force)."
-
-if [ -n "$backup_branch" ]; then
-  echo "$done_message Backup in $backup_branch."
-else
-  echo "$done_message"
-fi
