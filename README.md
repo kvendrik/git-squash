@@ -13,6 +13,26 @@ The goal here is to make cleaning up your branch commits even quicker. Please no
 
 Also note that there are other speedy ways of squashing commits that are build into Git itself like [Git's `--autosquash` option](https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---autosquash) (which provides more control over what you're squashing) and [`git merge --squash`](https://git-scm.com/docs/git-merge#Documentation/git-merge.txt---squash) (which lets you automatically squash all commits together and merge).
 
+## Example
+```
+git log
+* 834c8e6 - (HEAD -> new-feature) Sets up build script (3 seconds ago) <Koen Vendrik>
+* 590c3a5 - Sets up CI (5 seconds ago) <Koen Vendrik>
+* 2b44299 - (master) adds template (42 minutes ago) <Koen Vendrik>
+
+git squash "Sets up tooling"
+[detached HEAD ea22831] Sets up tooling
+ Date: Sun Jun 21 14:52:18 2020 -0400
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 .ci.yml
+ create mode 100644 build.sh
+Successfully rebased and updated refs/heads/new-feature.
+
+git log
+* ea22831 - (HEAD -> new-feature) Sets up tooling (12 seconds ago) <Koen Vendrik>
+* 2b44299 - (master) adds template (42 minutes ago) <Koen Vendrik>
+```
+
 ## Help
 
 ```
