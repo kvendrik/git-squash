@@ -4,14 +4,10 @@
 
 ![](demo.gif)
 
-## What this does
-
-The goal here is to make cleaning up your branch commits even quicker. Please note though that `git squash` is just a slightly quicker and unified way to execute these commands:
-
-- `git squash` runs `git rebase -i --autostash your_base_branch`. `git squash` automates changing `pick` to `squash` and inserts your commit message so this workflow is reduced to a single command.
-- `git squash --reset` runs `git reset "$(git merge-base your_base_branch your_target_branch)"`.
-
-Also note that there are other speedy ways of squashing commits that are build into Git itself like [Git's `--autosquash` option](https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---autosquash) (which provides more control over what you're squashing) and [`git merge --squash`](https://git-scm.com/docs/git-merge#Documentation/git-merge.txt---squash) (which lets you automatically squash all commits together and merge).
+## Installation
+```
+brew install kvendrik/osx/git-squash
+```
 
 ## Example
 ```
@@ -32,6 +28,15 @@ git log
 * ea22831 - (HEAD -> new-feature) Sets up tooling (12 seconds ago) <Koen Vendrik>
 * 2b44299 - (master) adds template (42 minutes ago) <Koen Vendrik>
 ```
+
+## What this does
+
+The goal here is to make cleaning up your branch commits even quicker. Please note though that `git squash` is just a slightly quicker and unified way to execute these commands:
+
+- `git squash` runs `git rebase -i --autostash your_base_branch`. `git squash` automates changing `pick` to `squash` and inserts your commit message so this workflow is reduced to a single command.
+- `git squash --reset` runs `git reset "$(git merge-base your_base_branch your_target_branch)"`.
+
+Also note that there are other speedy ways of squashing commits that are build into Git itself like [Git's `--autosquash` option](https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---autosquash) (which provides more control over what you're squashing) and [`git merge --squash`](https://git-scm.com/docs/git-merge#Documentation/git-merge.txt---squash) (which lets you automatically squash all commits together and merge).
 
 ## Help
 
