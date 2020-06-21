@@ -2,14 +2,14 @@
 
 # Usage: strip_flags <...all_arguments>
 # echo $CURRENT_CLEAN_ARGUMENTS
-CURRENT_CLEAN_ARGUMENTS=()
+CURRENT_CLEAN_ARGUMENTS=""
 function strip_flags() {
-  CURRENT_CLEAN_ARGUMENTS=()
+  CURRENT_CLEAN_ARGUMENTS=""
   for argument in "$@"; do
     if [[ "$argument" =~ ^- ]]; then
       continue
     fi
-    CURRENT_CLEAN_ARGUMENTS+=("$argument")
+    CURRENT_CLEAN_ARGUMENTS+="$argument "
   done
 }
 
@@ -23,7 +23,7 @@ function check_contains_flag() {
 
 # Usage: extract_flag_value <all_arguments> <flag_name>
 function extract_flag_value() {
-  echo "$1" | grep -Eo "$2\=[^\s+]+" | grep -Eo '[^ \=]+$'
+  echo "$1" | grep -Eo "$2\=[^ ]+" | grep -Eo '[^ \=]+$'
 }
 
 function git_current_branch() {
@@ -35,7 +35,15 @@ function git_backup() {
 }
 
 function git_commit() {
-  git add --all :/ && git commit
+  if [ -n "$1" ]; then
+    git add --all :/ && git commit -m "$1"
+  else
+    git add --all :/ && git commit
+  fi
+}
+
+function git_rebase() {
+  GIT_SEQUENCE_EDITOR="sed -i -e '1 ! s/pick/squash/g'" git rebase -i --autostash "$1"
 }
 
 if ! git -C "$(pwd)" rev-parse --is-inside-work-tree &> /dev/null; then
@@ -44,21 +52,28 @@ if ! git -C "$(pwd)" rev-parse --is-inside-work-tree &> /dev/null; then
 fi
 
 if [ -n "$(check_contains_flag "$*" "help" "h")" ]; then
-  echo """Usage: git squash [--help|-h] [--backup=<branch_name>] [--backup|-b] [--reset|-r] [<base_branch>]
+  echo """Usage: git squash [--help|-h] [--backup=<branch_name>] [--backup|-b] [--reset|-r] [--base=<base_branch>] <commit_message>
 
 Arguments
-  base_branch    Branch that is used to grab the base commit to squash from (default: master)
+  commit_message    The commit message to use when commiting the squashed commit
 
 Flags
-  --reset|-r     Squashes without first updating the branch. By default we use a rebase which updates the branch before squashing.
-  --backup       Back up the branch before squashing to '[target_branch]-backup'. --backup accepts a backup branch name.
-  --help|-h      Print this help message"""
+  --base            Branch that is used to grab the base commit to squash from (default: master)
+  --backup          Back up the branch before squashing to '[target_branch]-backup'. --backup accepts a backup branch name.
+  --reset|-r        Squashes without first updating the branch. By default we use a rebase which updates the branch before squashing.
+  --help|-h         Print this help message"""
   exit 0
 fi
 
 strip_flags $*
-base_branch="${CURRENT_CLEAN_ARGUMENTS[1]:-master}"
+commit_message="$CURRENT_CLEAN_ARGUMENTS"
 target_branch="$(git_current_branch)"
+
+if [ -n "$(extract_flag_value "$*" "base")" ]; then
+  base_branch="$(extract_flag_value "$*" "base")"
+else
+  base_branch="master"
+fi
 
 if [ -n "$(extract_flag_value "$*" "backup")" ]; then
   backup_branch="$(extract_flag_value "$*" "backup")"
@@ -79,10 +94,17 @@ if [ -n "$backup_branch" ]; then
 fi
 
 if [ -z "$(check_contains_flag "$*" "reset" "r")" ]; then
-  if ! GIT_SEQUENCE_EDITOR="sed -i -e '1 ! s/pick/squash/g'" git rebase -i --autostash "$base_branch"; then
-    exit 1
+  if [ -z "$commit_message" ]; then
+    if ! git_rebase "$base_branch"; then
+      exit 1
+    fi
+    exit 0
+  else
+    if ! GIT_EDITOR="sed -i -e '2 s/^#/$commit_message\'$'\n&/g'" git_rebase "$base_branch"; then
+      exit 1
+    fi
+    exit 0
   fi
-  exit 0
 fi
 
 if git merge-base "$base_branch" "$target_branch" &> /dev/null; then
@@ -97,7 +119,7 @@ if ! git reset "$squash_from_commit"; then
   exit 1
 fi
 
-if ! git_commit; then
+if ! git_commit "$commit_message"; then
   echo "'git reset' worked but failed to create a new squash commit. Please manually run 'git add --all && git commit'."
   exit 1
 fi

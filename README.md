@@ -8,7 +8,7 @@
 
 The goal here is to make cleaning up your branch commits even quicker. Please note though that `git squash` is just a slightly quicker and unified way to execute these commands:
 
-- `git squash` runs `git rebase -i --autostash your_base_branch`. `git squash` automates changing `pick` to `squash`.
+- `git squash` runs `git rebase -i --autostash your_base_branch`. `git squash` automates changing `pick` to `squash` and inserts your commit message so this workflow is reduced to a single command.
 - `git squash --reset` runs `git reset "$(git merge-base your_base_branch your_target_branch)"`.
 
 Also note that there are other speedy ways of squashing commits that are build into Git itself like [Git's `--autosquash` option](https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---autosquash) (which provides more control over what you're squashing) and [`git merge --squash`](https://git-scm.com/docs/git-merge#Documentation/git-merge.txt---squash) (which lets you automatically squash all commits together and merge).
@@ -16,13 +16,14 @@ Also note that there are other speedy ways of squashing commits that are build i
 ## Help
 
 ```
-Usage: git squash [--help|-h] [--backup=<branch_name>] [--backup|-b] [--reset|-r] [<base_branch>]
+Usage: git squash [--help|-h] [--backup=<branch_name>] [--backup|-b] [--reset|-r] [--base=<base_branch>] <commit_message>
 
 Arguments
-  base_branch    Branch that is used to grab the base commit to squash from (default: master)
+  commit_message    The commit message to use when commiting the squashed commit
 
 Flags
-  --reset|-r     Squashes without first updating the branch. By default we use a rebase which updates the branch before squashing.
-  --backup       Back up the branch before squashing to '[target_branch]-backup'. --backup accepts a backup branch name.
-  --help|-h      Print this help message
+  --base            Branch that is used to grab the base commit to squash from (default: master)
+  --backup          Back up the branch before squashing to '[target_branch]-backup'. --backup accepts a backup branch name.
+  --reset|-r        Squashes without first updating the branch. By default we use a rebase which updates the branch before squashing.
+  --help|-h         Print this help message
 ```
