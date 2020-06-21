@@ -58,7 +58,7 @@ Arguments
   commit_message    The commit message to use when commiting the squashed commit
 
 Flags
-  --base            Branch that is used to grab the base commit to squash from (default: master)
+  --base            Branch that you eventually intend on merging into (default: master)
   --backup          Back up the branch before squashing to '[target_branch]-backup'. --backup accepts a backup branch name.
   --reset|-r        Squashes without first updating the branch. By default we use a rebase which updates the branch before squashing.
   --help|-h         Print this help message"""
