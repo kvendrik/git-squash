@@ -8,7 +8,7 @@ The goal here is to make cleaning up your branch commits even quicker. Please no
 - `git squash` runs `git rebase -i --autostash your_base_branch`. `git squash` automates changing `pick` to `squash`.
 - `git squash --reset` runs `git reset "$(git merge-base your_base_branch your_target_branch)"`.
 
-Also note that there are speedy ways to squash that are build into Git itself that provide more control over what commits you're squashing together, like [Git's `--autosquash` option](https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---autosquash) and [`git merge --squash`](https://git-scm.com/docs/git-merge#Documentation/git-merge.txt---squash).
+Also note that there are other speedy ways of squashing commits that are build into Git itself like [Git's `--autosquash` option](https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---autosquash) and [`git merge --squash`](https://git-scm.com/docs/git-merge#Documentation/git-merge.txt---squash).
 
 ### Help
 ```

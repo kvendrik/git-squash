@@ -80,7 +80,6 @@ fi
 
 if [ -z "$(check_contains_flag "$*" "reset" "r")" ]; then
   if ! GIT_SEQUENCE_EDITOR="sed -i -e '1 ! s/pick/squash/g'" git rebase -i --autostash "$base_branch"; then
-    echo "Failed to rebase"
     exit 1
   fi
   exit 0
@@ -99,12 +98,14 @@ if ! git reset "$squash_from_commit"; then
 fi
 
 if ! git_commit; then
-  echo "Squashing worked but failed to create a new squash commit."
+  echo "'git reset' worked but failed to create a new squash commit. Please manually run 'git add --all && git commit'."
   exit 1
 fi
 
+done_message="Done. Pushing will require a force push (e.g. git push origin $target_branch --force)."
+
 if [ -n "$backup_branch" ]; then
-  echo "Done. Pushing will require a force push. Backup in $backup_branch."
+  echo "$done_message Backup in $backup_branch."
 else
-  echo "Done. Pushing will require a force push."
+  echo "$done_message"
 fi
