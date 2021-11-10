@@ -52,7 +52,7 @@ if ! git -C "$(pwd)" rev-parse --is-inside-work-tree &> /dev/null; then
 fi
 
 if [ -n "$(check_contains_flag "$*" "help" "h")" ]; then
-  echo """Usage: git squash [--help|-h] [--backup=<branch_name>] [--backup|-b] [--reset|-r] [--base=<base_branch>] <commit_message>
+  echo """Usage: git squash [--help|-h] [--backup=<branch_name>] [--backup] [--reset|-r] [--base=<base_branch>] <commit_message>
 
 Arguments
   commit_message    The commit message to use when commiting the squashed commit
@@ -77,7 +77,7 @@ fi
 
 if [ -n "$(extract_flag_value "$*" "backup")" ]; then
   backup_branch="$(extract_flag_value "$*" "backup")"
-elif [ -n "$(check_contains_flag "$*" "backup" "b")" ]; then
+elif [ -n "$(check_contains_flag "$*" "backup" "backup")" ]; then
   backup_branch="$target_branch-backup"
 fi
 

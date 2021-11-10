@@ -5,11 +5,13 @@
 ![](demo.gif)
 
 ## Installation
+
 ```
 brew install kvendrik/osx/git-squash
 ```
 
 ## Example
+
 ```
 git log
 * 834c8e6 - (HEAD -> new-feature) Sets up build script (3 seconds ago) <Koen Vendrik>
@@ -41,7 +43,7 @@ Also note that there are other speedy ways of squashing commits that are build i
 ## Help
 
 ```
-Usage: git squash [--help|-h] [--backup=<branch_name>] [--backup|-b] [--reset|-r] [--base=<base_branch>] <commit_message>
+Usage: git squash [--help|-h] [--backup=<branch_name>] [--backup] [--reset|-r] [--base=<base_branch>] <commit_message>
 
 Arguments
   commit_message    The commit message to use when commiting the squashed commit
